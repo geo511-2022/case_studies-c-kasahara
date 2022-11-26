@@ -1,22 +1,22 @@
 ---
 title: "Case Study 04"
-author: Your Name
-date: August 1, 2020
+author: Candice Kasahara
+date: September 27, 2022
 output: github_document
 ---
 
-## First Header
+## What is the full name of the destination airport farthest from any of the NYC airports in the flights table?
 
-Comments
+library(dplyr)
+library(ggplot2)
+library(nycflights13)
+library(tidyverse)
 
-```{r}
-summary(cars)
-```
+farthest_airports <- flights %>%
+arrange(desc(distance)) %>%
+slice_head(n=1) %>%
+left_join(airports, by = c("dest" = "faa")) %>%
+select(name) %>%
+as.character()
 
-## Second Header
-
-Comments
-
-```{r}
-plot(pressure)
-```
+farthest_airports

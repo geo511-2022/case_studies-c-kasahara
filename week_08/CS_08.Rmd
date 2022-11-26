@@ -1,0 +1,55 @@
+---
+title: "Carbon Dioxide Concentrations at Mona Loa Observatory"
+author: "Candice Kasahara"
+date: '2022-10-25'
+output:
+  html_document: default
+  github_document: default
+  powerpoint_presentation: default
+  word_document: default
+---
+
+```{r}
+rmarkdown::render("CS_08.Rmd", output_format = "all")
+```
+
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(kableExtra)
+library(magick)
+mlo_ann <- read_table("ftp://aftp.cmdl.noaa.gov/products/trends/co2/co2_annmean_mlo.txt", skip = 56)
+colnames(mlo_ann) <- c("year", "mean", "unc")
+```
+
+```{r}
+ggplot(mlo_ann, aes(x = year, y = mean)) +
+  geom_line(aes(col = "red")) +
+  ggtitle(lab = "Annual Mean Carbon Dioxide Concentrations 1959-Present") +
+  xlab("Year") +
+  ylab("Mauna Loa Annual Mean CO2 (ppm)") +
+  theme(legend.position="none", plot.title = element_text(hjust = 0.5))
+```
+
+```{r}
+
+recent <- mlo_ann %>%
+  select(year, mean) %>%
+  arrange(desc(mean)) %>%
+  slice_head(n = 5)
+print(recent)
+
+recent %>%
+  kable(caption = 'Annual Mean Carbon Dioxide Concentrations at Mona Loa') %>%
+  kable_styling(latex_options = c("striped", "scale_down"), full_width = T, position = "left") %>%
+  row_spec(1, color = "red")
+
+recent %>%
+  kable() %>%
+  as_image(recent, width = 10, file = "table.png")
+
+```
+
+
