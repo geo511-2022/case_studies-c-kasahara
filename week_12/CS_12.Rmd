@@ -1,0 +1,44 @@
+---
+title: "CS_12"
+author: "Candice Kasahara"
+date: '2022-11-26'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## download packages
+```{r}
+library(dplyr)
+library(ggplot2)
+library(ggmap)
+library(htmlwidgets)
+library(widgetframe)
+```
+
+## download for weather data
+```{r}
+library(tidyverse)
+library(rnoaa)
+library(xts)
+```
+
+```{r}
+library(dygraphs)
+ 
+d = meteo_tidy_ghcnd("USW00014733",
+                   date_min = "2016-01-01", 
+                   var = c("TMAX"),
+                   keep_flags=T) %>% 
+   mutate(date=as.Date(date),
+          tmax=as.numeric(tmax)/10) #Divide the tmax data by 10 to convert to degrees.
+```
+
+```{r}
+xts = xts(d$tmax, order.by = d$date)
+dygraph(xts, main = "Daily Maximum Temperature in Buffalo, NY") %>%
+  dyRangeSelector(dateWindow = c("2020-01-01", "2020-10-31"))
+```
+
